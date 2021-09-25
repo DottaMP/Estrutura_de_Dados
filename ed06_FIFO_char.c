@@ -194,87 +194,135 @@ int main(int arg){
 }
 
 /* Outro jeito
-struct item {
+struct itemDaFila {
 	char nome[100];
-	struct item *proximo;
-} typedef item;
+	struct itemDaFila *proximo; 		
+} typedef itemDaFila;
 
-struct fila {
-	struct item *primeiro;
-} typedef fila;
+int tamanho; 
 
-int filavazia(fila *f);
-
-
-void colocanafila(fila *f, char *n){
-	item *novo = (item*)malloc(sizeof(item));
-	strcpy(novo->nome, n);
-	novo->proximo = NULL;
-	printf("add %s %x \n", novo->nome, novo);
-	if(filavazia(f)){
-		f->primeiro = novo;
-	} else {
-		item *aux = f->primeiro;
-		while(aux->proximo != NULL){
-			aux = aux->proximo;
-		}
-		aux->proximo = novo;
-	}
-}  
-
-void tiradafila(fila *f){
-		if(filavazia(f)){
-		printf("fila esta vazia !!");
-	} else {
-			printf("remove %s %x \n", f->primeiro->nome, f->primeiro);
-		item *aux = f->primeiro->proximo;
-		free(f->primeiro);
-		f->primeiro = aux;
-	}
-}
- 
-void comprimento(fila *f){
-	int cont = 0;
-	if(filavazia(f)){
-		printf("fila esta vazia !!");
-	} else {
-		item *aux = f->primeiro;
-		while(aux != NULL){
-			cont++;
-			aux = aux->proximo;
-		}
-		printf("Total de itens %i \n",cont);
-	}
+void criaFila(itemDaFila *fila){
+	fila->proximo = NULL;
+	tamanho = 0;
 }
 
-fila *criarFila(){
-	fila *f = (fila*)malloc(sizeof(fila));
-	return f;
-}
-
-
-int main(int argc, char *argv[]) {
-	fila f;
-	
-	colocanafila(&f, "maria");
-	colocanafila(&f, "joao");
-	colocanafila(&f, "jose");
-	colocanafila(&f, "ana");
-	comprimento(&f);
-	
-	tiradafila(&f);
-	tiradafila(&f);
-	comprimento(&f);
-	
-	return 0;
-}
-
-
-int filavazia(fila *f){
-	if(f->primeiro==NULL){
+int filaVazia(itemDaFila *fila){
+	if(fila->proximo == NULL){
 		return 1;
-	} else {
+	}else{
 		return 0;
 	}
-} 
+}
+
+itemDaFila *aloca(){
+	itemDaFila *novo=(itemDaFila *) malloc(sizeof(itemDaFila));
+	if(!novo){
+		printf("Memoria Indisponivel!\n");
+		exit(1);
+	}else{
+		printf("Informe o nome: "); scanf("%s", &novo->nome);
+		return novo;
+	}
+}
+	
+void colocaNaFila(itemDaFila *fila){
+	itemDaFila *novoItem = aloca();
+	novoItem->proximo = NULL;
+	if(filaVazia(fila)){
+		fila->proximo= novoItem;
+	}else{
+		itemDaFila *aux = fila->proximo;
+		
+		while(aux->proximo != NULL)
+		aux = aux->proximo;
+		aux->proximo = novoItem;
+	}
+	tamanho++;
+}
+
+// Apaga um item da fila
+itemDaFila *tiraDaFila (itemDaFila *fila){
+	if(fila->proximo == NULL){
+		printf("Fila vazia\n");
+		return NULL;
+	}else{
+		itemDaFila *aux = fila->proximo;
+		fila->proximo = aux->proximo;
+		tamanho--;
+		return aux;		
+	}
+}
+
+// listar a fila
+void listar(itemDaFila *fila){
+	if(filaVazia(fila)){
+		printf("Fila Vazia\n");
+		return ;
+	}itemDaFila *aux;
+	aux = fila->proximo;
+	printf("Fila: ");
+	
+	while(aux != NULL){
+		printf("%4s ", aux->nome);
+		aux = aux->proximo;
+	}printf(" \n");
+	int contador;
+	for(contador = 0; contador < tamanho; contador++)
+		for(contador = 0; contador < tamanho; contador++)
+		printf("%8d", contador +1);
+		printf("        \n");
+}
+
+
+
+void limpaFila(itemDaFila *fila){
+	if(!filaVazia(fila)){
+		itemDaFila *proximoItem, *itemAtual;
+		
+		itemAtual = fila->proximo;
+		while(itemAtual != NULL){
+			proximoItem = itemAtual->proximo;
+			free(itemAtual);
+			itemAtual = proximoItem;
+		}
+	}
+}
+
+void comprimentoFila(itemDaFila *fila){
+	if(filaVazia(fila)){
+		printf("Fila Vazia\n");
+		return ;
+	}
+	int contador;
+	for(contador = 0; contador < tamanho; contador++){
+		for(contador = 0; contador < tamanho; contador++);
+	}
+		printf("Comprimento atual da fila: %i", tamanho);
+}
+
+int main(){
+    itemDaFila *fila = (itemDaFila *)malloc(sizeof(itemDaFila));
+	if(!fila){
+		printf("Memoria insuficiente\n");
+		exit(1);
+	}else{
+	criaFila(fila);
+    colocaNaFila(fila); 
+    colocaNaFila(fila);
+    colocaNaFila(fila);
+    colocaNaFila(fila);
+    colocaNaFila(fila);
+    printf("\n\nTodos os dados da fila (FIFO):\n");
+    listar(fila);
+    printf("\n\nA fila depois do delete (FIFO):\n");
+    tiraDaFila(fila); // Apaga a primeira entrada da fila
+    tiraDaFila(fila);
+    listar(fila);
+    
+    //printf("\n\nNumero de elementos restantes na fila: %i \n", tamanho);
+    comprimentoFila(fila);
+    free(fila);
+    return 0;
+	}
+}
 */
